@@ -72,6 +72,44 @@ export default function PropertyForm() {
     }
   }
 
+  const convertToWebP = (file: File): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            reject(new Error('Canvas não disponível'));
+            return;
+          }
+          ctx.drawImage(img, 0, 0);
+          canvas.toBlob((blob) => {
+            if (!blob) {
+              reject(new Error('Falha na conversão para WebP'));
+              return;
+            }
+            const fileName = file.name.replace(/\.[^/.]+$/, "") + ".webp";
+            const webpFile = new File([blob], fileName, {
+              type: "image/webp",
+              lastModified: Date.now()
+            });
+            resolve(webpFile);
+          }, 'image/webp', 0.8);
+        };
+        img.onerror = (error) => reject(error);
+        if (event.target?.result) {
+          img.src = event.target.result as string;
+        }
+      };
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
+  };
+
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target.files;
     if (!files || files.length === 0) return;
@@ -79,16 +117,22 @@ export default function PropertyForm() {
     const newImages = [...(formData.images || [])];
 
     for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const fileName = `${Math.random()}.${file.name.split('.').pop()}`;
-      const { error: uploadError } = await supabase.storage.from('property-images').upload(fileName, file);
-      
-      if (uploadError) {
-        alert(`Erro ao subir imagem: ${uploadError.message}`);
-        console.error(uploadError);
-      } else {
-        const { data: { publicUrl } } = supabase.storage.from('property-images').getPublicUrl(fileName);
-        newImages.push(publicUrl);
+      try {
+        const originalFile = files[i];
+        const webpFile = await convertToWebP(originalFile);
+        const fileName = `${Math.random()}-${webpFile.name}`;
+        
+        const { error: uploadError } = await supabase.storage.from('property-images').upload(fileName, webpFile);
+        
+        if (uploadError) {
+          alert(`Erro ao subir imagem: ${uploadError.message}`);
+          console.error(uploadError);
+        } else {
+          const { data: { publicUrl } } = supabase.storage.from('property-images').getPublicUrl(fileName);
+          newImages.push(publicUrl);
+        }
+      } catch (err: any) {
+        alert(`Erro ao processar imagem: ${err.message}`);
       }
     }
     setFormData(prev => ({ ...prev, images: newImages }));
