@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-navy-50: #f4f6f9;
+  --color-navy-100: #e9edf3;
+  --color-navy-200: #c8d3e2;
+  --color-navy-300: #a6b9d1;
+  --color-navy-400: #6385af;
+  --color-navy-500: #20518d;
+  --color-navy-600: #1d497f;
+  --color-navy-700: #183d6a;
+  --color-navy-800: #133155;
+  --color-navy-900: #051C39;
+  --color-navy-950: #020b17;
+  --color-gold-500: #C5A059;
+}
+
+@layer base {
+  body {
+    @apply bg-[#F8F9FA] text-navy-900 antialiased selection:bg-navy-500 selection:text-white;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-sm;
+  }
+  
+  .premium-card {
+    @apply bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-navy-100/50 transition-all duration-500 hover:shadow-[0_20px_50px_rgb(0,0,0,0.08)] hover:-translate-y-1 overflow-hidden;
+  }
+
+  .btn-primary {
+    @apply bg-navy-900 text-white px-8 py-4 rounded-xl font-semibold tracking-tight transition-all duration-300 hover:bg-navy-800 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:pointer-events-none;
+  }
+  
+  .btn-secondary {
+    @apply bg-white text-navy-900 border border-navy-100 px-8 py-4 rounded-xl font-semibold tracking-tight transition-all duration-300 hover:bg-navy-50 active:scale-95;
+  }
+
+  .input-premium {
+    @apply bg-navy-50 border-none rounded-2xl px-6 py-4 text-navy-900 placeholder:text-navy-300 focus:ring-2 focus:ring-navy-500 outline-none transition-all;
+  }
+
+  .badge-status {
+    @apply px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider;
+  }
+}
+
+.scroll-hide::-webkit-scrollbar {
+  display: none;
+}
+.scroll-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* iOS Blur Effect */
+.ios-blur {
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+.stripe-shadow {
+  shadow: 0 50px 100px -20px rgba(50, 50, 93, 0.25), 0 30px 60px -30px rgba(0, 0, 0, 0.3);
+}
+
+.linear-gradient-text {
+  background: linear-gradient(135deg, #051C39 0%, #3B82F6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

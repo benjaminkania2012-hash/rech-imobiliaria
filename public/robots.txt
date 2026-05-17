@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://rechnegocios.com.br/sitemap.xml
