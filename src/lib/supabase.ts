@@ -13,8 +13,11 @@ const isValidUrl = (url: string) => {
   }
 };
 
-const finalUrl = isValidUrl(supabaseUrl) ? supabaseUrl : 'https://placeholder.supabase.co';
-const finalKey = (supabaseAnonKey && !supabaseAnonKey.includes('SUA_KEY')) ? supabaseAnonKey : 'placeholder';
+const fallbackUrl = 'https://bdpmtmlbstlcrfztvcus.supabase.co';
+const fallbackKey = 'sb_publishable_4tri-CqB9vVNFe5KJyPapA_QGMBmPcm';
+
+const finalUrl = isValidUrl(supabaseUrl) ? supabaseUrl : fallbackUrl;
+const finalKey = (supabaseAnonKey && !supabaseAnonKey.includes('SUA_KEY')) ? supabaseAnonKey : fallbackKey;
 
 export const supabase = createClient(finalUrl, finalKey);
 
