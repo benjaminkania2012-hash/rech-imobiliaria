@@ -70,7 +70,7 @@ const INITIAL_PROPERTIES: Property[] = [
 
 export const demoService = {
   isDemoMode: () => {
-    return !import.meta.env.VITE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL.includes('placeholder');
+    return false; // Forçando desativação do modo demonstração
   },
 
   getProperties: (): Property[] => {

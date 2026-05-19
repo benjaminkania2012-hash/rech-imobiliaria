@@ -132,32 +132,7 @@ export default function Home() {
   useEffect(() => {
     async function fetchProperties() {
       try {
-        const isDemoLogged = localStorage.getItem('imobi_demo_logged') === 'true';
-        if (demoService.isDemoMode() || isDemoLogged) {
-          let demoData = demoService.getProperties();
-          
-          if (filterType !== 'all') {
-            demoData = demoData.filter(p => p.type === filterType);
-          }
-          if (filterCity !== 'all') {
-            demoData = demoData.filter(p => p.city === filterCity);
-          }
-          if (filterMinPrice > 0) {
-            demoData = demoData.filter(p => p.price >= filterMinPrice);
-          }
-
-          if (filterCategory !== 'all') {
-            demoData = demoData.filter(p => p.category === filterCategory);
-          }
-          
-          if (filterBedrooms !== 'all') {
-            demoData = demoData.filter(p => p.bedrooms === filterBedrooms);
-          }
-
-          setProperties(demoData);
-          setLoading(false);
-          return;
-        }
+        // Modo de demonstração desativado - buscando sempre do banco real
 
         let query = supabase.from('properties').select('*').order('created_at', { ascending: false });
         if (filterType !== 'all') query = query.eq('type', filterType);
