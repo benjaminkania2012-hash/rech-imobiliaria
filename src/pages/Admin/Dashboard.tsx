@@ -547,7 +547,7 @@ export default function Dashboard() {
                                      <p className={cn("text-sm font-bold", darkMode ? "text-white/40" : "text-navy-400")}>{p.views || 0}</p>
                                   </td>
                                   <td className="px-10 py-8 text-right">
-                                    <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                                    <div className="flex items-center justify-end gap-3 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-all translate-x-0 lg:translate-x-4 group-hover:translate-x-0">
                                        <Link to={`/rech-admin/edit/${p.id}`} className={cn("w-12 h-12 rounded-2xl flex items-center justify-center transition-all", darkMode ? "bg-white/5 text-white hover:bg-white" : "bg-navy-50 text-navy-900 hover:bg-navy-900 hover:text-white")}>
                                           <Edit2 size={18} />
                                        </Link>
