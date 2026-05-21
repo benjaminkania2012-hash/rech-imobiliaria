@@ -235,7 +235,13 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-t from-navy-900/90 via-transparent to-transparent pointer-events-none" />
         </div>
 
-        <div className="max-w-7xl mx-auto w-full relative z-10 flex flex-col justify-between h-full min-h-[500px]">
+        <div 
+          className="max-w-7xl mx-auto w-full relative z-10 flex flex-col justify-between h-full min-h-[500px] cursor-pointer"
+          onClick={(e) => {
+            if ((e.target as HTMLElement).closest('button, a')) return;
+            if (activeHeroProperty) navigate(`/property/${activeHeroProperty.id}`);
+          }}
+        >
           {/* Top CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-10">
             <div className="flex items-center gap-2">
