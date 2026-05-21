@@ -431,7 +431,17 @@ export default function Home() {
               <p className="text-navy-400 font-medium">Tente ajustar seus filtros de busca.</p>
             </div>
             <button 
-              onClick={() => { setSearchTerm(''); setFilterType('all'); }} 
+              onClick={() => { 
+                setSearchTerm(''); 
+                setFilterType('all');
+                setFilterCity('all');
+                setFilterNeighborhood('all');
+                setFilterMinPrice(0);
+                setFilterMaxPrice('all');
+                setFilterBedrooms('all');
+                setFilterCategory('all');
+                setSearchParams(new URLSearchParams());
+              }} 
               className="btn-secondary"
             >
               Limpar Todos os Filtros
