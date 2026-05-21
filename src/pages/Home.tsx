@@ -320,7 +320,9 @@ export default function Home() {
                       : "bg-white/10 text-white border-white/10 hover:bg-white/20"
                   )}
                 >
-                  <tab.icon size={13} className="shrink-0" />
+                  {tab.id === 'destaques' && (
+                    <tab.icon size={16} className="shrink-0" />
+                  )}
                   {tab.label}
                 </button>
               ))}
