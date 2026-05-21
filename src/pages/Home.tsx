@@ -217,18 +217,15 @@ export default function Home() {
           <div className="absolute inset-0 bg-navy-900/60 backdrop-blur-[6px]" />
         </div>
 
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
-          {/* Left Side: Copy, CTA & Search Engine */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
+        <div className="max-w-7xl mx-auto flex flex-col gap-12 relative z-10 w-full">
+          {/* Top Bar with CTAs and Title */}
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="lg:col-span-5 space-y-6"
+            className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 w-full"
           >
-
-
-            {/* CTAs */}
-            <div className="flex flex-wrap gap-3.5 pt-1">
+            <div className="flex flex-wrap gap-3.5">
               <a 
                 href="https://wa.me/555499123455?text=Olá!%20Gostaria%20de%20conversar%20com%20um%20especialista%20sobre%20as%20oportunidades%20imobiliárias%20da%20Caixa." 
                 target="_blank" 
@@ -254,109 +251,100 @@ export default function Home() {
                 <ArrowRight size={18} />
               </button>
             </div>
-
-          </motion.div>
-
-          {/* Right Side: Property Categories & Interactive Card Slider */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.2 }}
-            className="lg:col-span-7 w-full flex flex-col space-y-6 lg:pl-8"
-          >
-            {/* Elegant Header for Featured Properties Carousel */}
-            <div className="flex items-center gap-2 pb-1">
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/10 text-white text-[10px] font-black uppercase tracking-[0.25em] border border-white/10 backdrop-blur-sm">
+            
+            {/* Elegant Header for Featured Properties */}
+            <div className="flex items-center">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 text-white text-[10px] font-black uppercase tracking-[0.25em] border border-white/10 backdrop-blur-md">
                 <Star size={12} className="text-gold-500 fill-gold-500 shrink-0" />
                 Oportunidades em Destaque
               </span>
             </div>
-
-            {/* Main Mini Marketplace Container */}
-            <div className="w-full space-y-3">
-              {allLoading ? (
-                <div className="w-full h-[390px] bg-white/5 border border-white/10 rounded-[2.5rem] animate-pulse flex flex-col items-center justify-center text-white/50 text-xs font-bold gap-3">
-                  <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
-                  Carregando oportunidades...
-                </div>
-              ) : heroPropertiesSlice.length > 0 ? (
-                <div className="grid grid-cols-1 gap-3">
-                  {heroPropertiesSlice.map((property, idx) => (
-                    <motion.div
-                      key={property.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.2 + (idx * 0.1) }}
-                    >
-                      <Link 
-                        to={`/property/${property.id}`}
-                        className="flex gap-4 p-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-3xl transition-all group backdrop-blur-md items-center"
-                      >
-                        <div className="w-28 h-28 rounded-2xl overflow-hidden shrink-0 relative">
-                          <img 
-                            src={property.images?.[0] || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=800'} 
-                            alt={property.title}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-                          />
-                          <div className="absolute top-2 left-2 px-2 py-1 bg-navy-900/80 backdrop-blur-md rounded text-[8px] font-bold text-white uppercase tracking-wider border border-white/20">
-                            {property.type === 'auction' ? 'Leilão' : 'Venda'}
-                          </div>
-                        </div>
-                        <div className="flex flex-col justify-center flex-1 py-1">
-                          <h4 className="text-white font-bold text-sm line-clamp-1 group-hover:text-gold-500 transition-colors pr-2">
-                            {property.title}
-                          </h4>
-                          <p className="text-navy-200 text-xs mt-1 font-medium flex items-center gap-1 opacity-80">
-                            <MapPin size={12} className="text-navy-300" />
-                            {property.neighborhood}, {property.city}
-                          </p>
-                          
-                          <div className="flex items-center gap-3 mt-2 mb-1">
-                            <div className="flex items-center gap-1 text-navy-200">
-                              <Bed size={12} className="text-navy-400" />
-                              <span className="text-[11px] font-bold">{property.bedrooms}</span>
-                            </div>
-                            <div className="flex items-center gap-1 text-navy-200">
-                              <Bath size={12} className="text-navy-400" />
-                              <span className="text-[11px] font-bold">{property.bathrooms}</span>
-                            </div>
-                            <div className="flex items-center gap-1 text-navy-200">
-                              <Move size={12} className="text-navy-400" />
-                              <span className="text-[11px] font-bold">{property.area}m²</span>
-                            </div>
-                          </div>
-                          
-                          <div className="flex items-center justify-between w-full mt-auto">
-                            <span className="text-base font-black text-white tracking-tight">
-                              {formatPrice(property.price)}
-                            </span>
-                            <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-white group-hover:bg-gold-500 group-hover:text-navy-900 transition-colors mr-2">
-                              <ArrowRight size={14} />
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                    </motion.div>
-                  ))}
-                </div>
-              ) : (
-                <div className="w-full h-[390px] bg-white/5 border border-white/10 rounded-[2.5rem] backdrop-blur-md flex flex-col items-center justify-center p-8 text-center space-y-4">
-                  <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center text-white/40 shadow-inner">
-                    <Building2 size={28} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-white text-base">Novidades chegando</h4>
-                    <p className="text-white/60 text-xs mt-1 max-w-[250px] mx-auto leading-relaxed">
-                      Estamos filtrando as melhores oportunidades imobiliárias Caixa nesta categoria.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
           </motion.div>
+
+          {/* 3-Column Mini Marketplace Container */}
+          <div className="w-full">
+            {allLoading ? (
+              <div className="w-full h-[390px] bg-white/5 border border-white/10 rounded-[2.5rem] animate-pulse flex flex-col items-center justify-center text-white/50 text-xs font-bold gap-3">
+                <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                Carregando oportunidades...
+              </div>
+            ) : heroPropertiesSlice.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                {heroPropertiesSlice.map((property, idx) => (
+                  <motion.div
+                    key={property.id}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.2 + (idx * 0.1) }}
+                  >
+                    <Link 
+                      to={`/property/${property.id}`}
+                      className="flex flex-col bg-white/5 hover:bg-white/10 border border-white/10 rounded-[2rem] transition-all group backdrop-blur-md overflow-hidden h-full"
+                    >
+                      <div className="w-full aspect-[4/3] relative overflow-hidden">
+                        <img 
+                          src={property.images?.[0] || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=800'} 
+                          alt={property.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                        />
+                        <div className="absolute top-4 left-4 px-3 py-1.5 bg-navy-900/80 backdrop-blur-md rounded-lg text-[9px] font-bold text-white uppercase tracking-wider border border-white/20">
+                          {property.type === 'auction' ? 'Leilão' : 'Venda Direta'}
+                        </div>
+                      </div>
+                      <div className="flex flex-col flex-1 p-6">
+                        <h4 className="text-white font-bold text-lg line-clamp-2 group-hover:text-gold-500 transition-colors leading-snug">
+                          {property.title}
+                        </h4>
+                        <p className="text-navy-200 text-xs mt-2 font-medium flex items-center gap-1.5 opacity-80">
+                          <MapPin size={14} className="text-navy-300" />
+                          {property.neighborhood}, {property.city}
+                        </p>
+                        
+                        <div className="flex items-center gap-4 mt-5 mb-2 pt-5 border-t border-white/10">
+                          <div className="flex items-center gap-1.5 text-navy-200">
+                            <Bed size={16} className="text-navy-400" />
+                            <span className="text-xs font-bold">{property.bedrooms}</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-navy-200">
+                            <Bath size={16} className="text-navy-400" />
+                            <span className="text-xs font-bold">{property.bathrooms}</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-navy-200">
+                            <Move size={16} className="text-navy-400" />
+                            <span className="text-xs font-bold">{property.area}m²</span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center justify-between w-full mt-auto pt-4">
+                          <span className="text-xl font-black text-white tracking-tight">
+                            {formatPrice(property.price)}
+                          </span>
+                          <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white group-hover:bg-gold-500 group-hover:text-navy-900 transition-colors">
+                            <ArrowRight size={16} />
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+            ) : (
+              <div className="w-full h-[390px] bg-white/5 border border-white/10 rounded-[2.5rem] backdrop-blur-md flex flex-col items-center justify-center p-8 text-center space-y-4">
+                <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center text-white/40 shadow-inner">
+                  <Building2 size={28} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-white text-base">Novidades chegando</h4>
+                  <p className="text-white/60 text-xs mt-1 max-w-[250px] mx-auto leading-relaxed">
+                    Estamos filtrando as melhores oportunidades imobiliárias Caixa nesta categoria.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
