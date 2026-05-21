@@ -210,7 +210,7 @@ export default function Home() {
   return (
     <div className="space-y-32 pb-32">
       {/* Full-Width Carousel Hero Section */}
-      <section className="relative pt-32 pb-24 px-6 overflow-hidden min-h-[85vh] flex items-center rounded-b-[4rem] mx-2 mt-2">
+      <section className="relative pt-24 pb-8 px-6 overflow-hidden h-[calc(100vh-1rem)] min-h-[600px] flex items-center rounded-b-[4rem] mx-2 mt-2">
         {/* Dynamic Background Image */}
         <div className="absolute inset-0 z-0 bg-navy-900">
           <AnimatePresence mode="popLayout">
