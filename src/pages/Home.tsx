@@ -211,12 +211,15 @@ export default function Home() {
   return (
     <div className="space-y-32 pb-32">
       {/* Full-Width Carousel Hero Section */}
-      <section className="relative pt-24 pb-8 px-6 overflow-hidden h-[calc(100vh-1rem)] min-h-[600px] flex items-center rounded-b-[4rem] mx-2 mt-2">
+      <section 
+        className="relative pt-24 pb-8 px-6 overflow-hidden h-[calc(100vh-1rem)] min-h-[600px] flex items-center rounded-b-[4rem] mx-2 mt-2 cursor-pointer group"
+        onClick={(e) => {
+          if ((e.target as HTMLElement).closest('button, a')) return;
+          if (activeHeroProperty) navigate(`/property/${activeHeroProperty.id}`);
+        }}
+      >
         {/* Dynamic Background Image */}
-        <div 
-          className="absolute inset-0 z-0 bg-navy-900 cursor-pointer"
-          onClick={() => activeHeroProperty && navigate(`/property/${activeHeroProperty.id}`)}
-        >
+        <div className="absolute inset-0 z-0 bg-navy-900 pointer-events-none">
           <AnimatePresence mode="popLayout">
             {activeHeroProperty && (
               <motion.img
@@ -226,7 +229,7 @@ export default function Home() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 1.5, ease: "easeInOut" }}
                 src={activeHeroProperty.images?.[0] || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=1920'}
-                className="absolute inset-0 w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3s]"
               />
             )}
           </AnimatePresence>
@@ -235,13 +238,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-t from-navy-900/90 via-transparent to-transparent pointer-events-none" />
         </div>
 
-        <div 
-          className="max-w-7xl mx-auto w-full relative z-10 flex flex-col justify-between h-full min-h-[500px] cursor-pointer"
-          onClick={(e) => {
-            if ((e.target as HTMLElement).closest('button, a')) return;
-            if (activeHeroProperty) navigate(`/property/${activeHeroProperty.id}`);
-          }}
-        >
+        <div className="max-w-7xl mx-auto w-full relative z-10 flex flex-col justify-between h-full min-h-[500px]">
           {/* Top CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-10">
             <div className="flex items-center gap-2">
