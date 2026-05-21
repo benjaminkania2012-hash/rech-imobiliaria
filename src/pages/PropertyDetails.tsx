@@ -204,13 +204,13 @@ export default function PropertyDetails() {
             <div className="pt-6 border-t border-slate-100 flex items-center gap-4">
               <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center">
                  <img 
-                   src={`https://ui-avatars.com/api/?name=Imobi+Premium&background=2563eb&color=fff&bold=true`} 
+                   src={`https://ui-avatars.com/api/?name=Rech+Imobiliaria&background=2563eb&color=fff&bold=true`} 
                    className="w-full h-full rounded-full"
                    alt="Avatar"
                  />
               </div>
               <div>
-                <p className="font-bold text-slate-900">Equipe ImobiPremium</p>
+                <p className="font-bold text-slate-900">Equipe Rech Imobiliária</p>
                 <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">CRECI 12345-J</p>
               </div>
             </div>
