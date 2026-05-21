@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Building2, ArrowRight, ChevronDown, ShieldCheck, Award, Users, Star, CheckCircle2, History, Scale, FileCheck, Landmark, MessageCircle, Briefcase, Percent, TrendingDown } from 'lucide-react';
+import { Search, Building2, ArrowRight, ChevronDown, ShieldCheck, Award, Users, Star, CheckCircle2, History, Scale, FileCheck, Landmark, MessageCircle, Briefcase } from 'lucide-react';
 import { supabase, type Property } from '../lib/supabase';
 import { demoService } from '../lib/demo';
 import PropertyCard from '../components/PropertyCard';
@@ -27,7 +27,6 @@ export default function Home() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Hero interactive states
-  const [activeHeroTab, setActiveHeroTab] = useState<'destaques' | 'caixa' | 'desconto' | 'lancamentos' | 'premium'>('destaques');
   const [heroCardIndex, setHeroCardIndex] = useState(0);
   
 
@@ -159,10 +158,6 @@ export default function Home() {
     fetchAllProperties();
   }, []);
 
-  // Reset carousel card index when active tab changes
-  useEffect(() => {
-    setHeroCardIndex(0);
-  }, [activeHeroTab]);
 
   useEffect(() => {
     async function fetchProperties() {
@@ -195,30 +190,12 @@ export default function Home() {
 
 
 
-  // Filter properties based on the active tab in the Hero
-  const getHeroPropertiesByTab = () => {
-    switch (activeHeroTab) {
-      case 'destaques':
-        return allProperties.filter(p => p.featured);
-      case 'caixa':
-        return allProperties.filter(p => 
-          p.title?.toLowerCase().includes('caixa') || 
-          p.description?.toLowerCase().includes('caixa') ||
-          p.title?.toLowerCase().includes('leilão') ||
-          p.description?.toLowerCase().includes('leilão')
-        );
-      case 'desconto':
-        return allProperties.filter(p => p.market_value && p.market_value > p.price);
-      case 'lancamentos':
-        return allProperties.filter(p => p.category === 'empreendimento');
-      case 'premium':
-        return allProperties.filter(p => p.price >= 1000000);
-      default:
-        return [];
-    }
+  // Get featured properties for the Hero carousel
+  const getHeroProperties = () => {
+    return allProperties.filter(p => p.featured);
   };
 
-  const heroPropertiesList = getHeroPropertiesByTab();
+  const heroPropertiesList = getHeroProperties();
   const heroPropertiesSlice = heroPropertiesList.slice(0, 5); // Limit to top 5 carousel items
   const activeHeroProperty = heroPropertiesSlice[heroCardIndex];
 
@@ -301,34 +278,12 @@ export default function Home() {
             transition={{ duration: 1, delay: 0.2 }}
             className="lg:col-span-7 w-full flex flex-col space-y-6 lg:pl-8"
           >
-            {/* Horizontal Categories Tabs - Responsive Touch Swipeable list */}
-            <div className="flex gap-2 overflow-x-auto pb-2 scroll-hide scroll-smooth">
-              {[
-                { id: 'destaques', label: 'Destaques', icon: Star },
-                { id: 'caixa', label: 'Imóveis Caixa', icon: Landmark },
-                { id: 'desconto', label: 'Alto Desconto', icon: Percent },
-                { id: 'lancamentos', label: 'Lançamentos', icon: Award },
-                { id: 'premium', label: 'Premium', icon: ShieldCheck }
-              ].map(tab => {
-                const IconComponent = tab.icon;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveHeroTab(tab.id as any)}
-                    className={cn(
-                      "px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap border shrink-0 cursor-pointer",
-                      activeHeroTab === tab.id
-                        ? "bg-white text-navy-900 border-white shadow-md shadow-white/5"
-                        : "bg-white/10 text-white border-white/10 hover:bg-white/20"
-                    )}
-                  >
-                    {tab.id === 'destaques' && IconComponent && (
-                      <IconComponent size={16} className="shrink-0" />
-                    )}
-                    {tab.label}
-                  </button>
-                );
-              })}
+            {/* Elegant Header for Featured Properties Carousel */}
+            <div className="flex items-center gap-2 pb-1">
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/10 text-white text-[10px] font-black uppercase tracking-[0.25em] border border-white/10 backdrop-blur-sm">
+                <Star size={12} className="text-gold-500 fill-gold-500 shrink-0" />
+                Oportunidades em Destaque
+              </span>
             </div>
 
             {/* Main Interactive Property Card Slider container */}
@@ -346,7 +301,7 @@ export default function Home() {
                   <div className="relative h-[390px] w-full">
                     <AnimatePresence mode="wait">
                       <motion.div
-                        key={`${activeHeroTab}-${activeHeroProperty.id}`}
+                        key={activeHeroProperty.id}
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -20 }}
