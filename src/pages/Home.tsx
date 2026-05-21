@@ -392,12 +392,7 @@ export default function Home() {
             <p className="text-navy-400 max-w-xl font-medium">Curadoria exclusiva de ativos imobiliários com alto potencial de ROI.</p>
           </div>
           
-          <div className="flex items-center gap-4 text-sm font-bold">
-            <span className="text-navy-300 uppercase tracking-widest">Ordenar por:</span>
-            <button className="flex items-center gap-2 text-navy-900 group">
-              Maior Economia (%) <ChevronDown size={16} className="group-hover:translate-y-0.5 transition-transform" />
-            </button>
-          </div>
+
         </div>
 
         {loading ? (
