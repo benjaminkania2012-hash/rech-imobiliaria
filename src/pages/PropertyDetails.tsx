@@ -191,14 +191,22 @@ export default function PropertyDetails() {
             </div>
 
             <div className="space-y-4">
-               <button className="w-full btn-primary flex items-center justify-center gap-3 py-4 text-lg">
+               <a 
+                 href="tel:+555499123455"
+                 className="w-full btn-primary flex items-center justify-center gap-3 py-4 text-lg"
+               >
                  <Phone size={20} />
                  Ligar para Corretor
-               </button>
-               <button className="w-full btn-secondary flex items-center justify-center gap-3 py-4 text-lg border-green-200 text-green-700 hover:bg-green-50">
+               </a>
+               <a 
+                 href={`https://wa.me/555499123455?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20o%20imóvel%20${encodeURIComponent(property.title)}`}
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 className="w-full btn-secondary flex items-center justify-center gap-3 py-4 text-lg border-green-200 text-green-700 hover:bg-green-50"
+               >
                  <MessageCircle size={20} />
                  WhatsApp
-               </button>
+               </a>
             </div>
 
             <div className="pt-6 border-t border-slate-100 flex items-center gap-4">
@@ -216,7 +224,12 @@ export default function PropertyDetails() {
             </div>
           </div>
           
-          <div className="apple-card p-6 bg-slate-50/50 border-dashed border-2 border-slate-200 flex items-center gap-4 group cursor-pointer hover:border-blue-300 transition-colors">
+          <a 
+            href={`https://wa.me/555499123455?text=Olá!%20Gostaria%20de%20agendar%20uma%20visita%20para%20o%20imóvel%20${encodeURIComponent(property.title)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="apple-card p-6 bg-slate-50/50 border-dashed border-2 border-slate-200 flex items-center gap-4 group cursor-pointer hover:border-blue-300 transition-colors block"
+          >
             <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-blue-600 shadow-sm group-hover:scale-110 transition-transform">
               <Calendar size={20} />
             </div>
@@ -224,7 +237,7 @@ export default function PropertyDetails() {
               <p className="font-bold text-slate-900">Agendar Visita</p>
               <p className="text-xs text-slate-500">Escolha o melhor horário para você.</p>
             </div>
-          </div>
+          </a>
         </div>
       </div>
     </div>
