@@ -1,26 +1,40 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, MapPin, Building2, Home as HomeIcon, SlidersHorizontal, ArrowRight, ChevronDown, ShieldCheck, Award, Users, Star, CheckCircle2, History, Scale, FileCheck, Landmark, MessageCircle, Briefcase } from 'lucide-react';
+import { Search, MapPin, Building2, Home as HomeIcon, SlidersHorizontal, ArrowRight, ChevronDown, ShieldCheck, Award, Users, Star, CheckCircle2, History, Scale, FileCheck, Landmark, MessageCircle, Briefcase, Percent, TrendingDown } from 'lucide-react';
 import { supabase, type Property } from '../lib/supabase';
 import { demoService } from '../lib/demo';
 import PropertyCard from '../components/PropertyCard';
+import HeroPropertyCard from '../components/HeroPropertyCard';
 import { cn } from '../lib/utils';
 import { Link, useSearchParams } from 'react-router-dom';
 import { BLOG_POSTS } from '../lib/blog-data';
 
 export default function Home() {
   const [properties, setProperties] = useState<Property[]>([]);
+  const [allProperties, setAllProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
+  const [allLoading, setAllLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [filterCity, setFilterCity] = useState('all');
   const [filterNeighborhood, setFilterNeighborhood] = useState('all');
   const [filterMinPrice, setFilterMinPrice] = useState(0);
+  const [filterMaxPrice, setFilterMaxPrice] = useState<number | 'all'>('all');
   const [filterBedrooms, setFilterBedrooms] = useState<number | 'all'>('all');
   const [filterCategory, setFilterCategory] = useState('venda');
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+
+  // Hero interactive states
+  const [activeHeroTab, setActiveHeroTab] = useState<'destaques' | 'caixa' | 'desconto' | 'lancamentos' | 'premium'>('destaques');
+  const [heroCardIndex, setHeroCardIndex] = useState(0);
+  
+  // Hero search bar states
+  const [searchCity, setSearchCity] = useState('all');
+  const [searchNeighborhood, setSearchNeighborhood] = useState('all');
+  const [searchType, setSearchType] = useState('all');
+  const [searchPriceRange, setSearchPriceRange] = useState('all');
 
   // Sync state with URL params
   useEffect(() => {
@@ -39,6 +53,7 @@ export default function Home() {
       setFilterCity('all');
       setFilterNeighborhood('all');
       setFilterMinPrice(0);
+      setFilterMaxPrice('all');
     }
 
     if (shouldScroll === 'true') {
@@ -129,16 +144,39 @@ export default function Home() {
     };
   }, []);
 
+  // Fetch all properties once on load to populate highlights and filters
+  useEffect(() => {
+    async function fetchAllProperties() {
+      try {
+        const { data, error } = await supabase
+          .from('properties')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (error) throw error;
+        setAllProperties(data || []);
+      } catch (err) {
+        console.error('Error fetching all properties:', err);
+      } finally {
+        setAllLoading(false);
+      }
+    }
+    fetchAllProperties();
+  }, []);
+
+  // Reset carousel card index when active tab changes
+  useEffect(() => {
+    setHeroCardIndex(0);
+  }, [activeHeroTab]);
+
   useEffect(() => {
     async function fetchProperties() {
       try {
-        // Modo de demonstração desativado - buscando sempre do banco real
-
         let query = supabase.from('properties').select('*').order('created_at', { ascending: false });
         if (filterType !== 'all') query = query.eq('type', filterType);
         if (filterCity !== 'all') query = query.eq('city', filterCity);
         if (filterNeighborhood !== 'all') query = query.eq('neighborhood', filterNeighborhood);
         if (filterMinPrice > 0) query = query.gte('price', filterMinPrice);
+        if (filterMaxPrice !== 'all' && filterMaxPrice > 0) query = query.lte('price', filterMaxPrice);
         if (filterCategory !== 'all') query = query.eq('category', filterCategory);
         if (filterBedrooms !== 'all') query = query.eq('bedrooms', filterBedrooms);
 
@@ -152,20 +190,79 @@ export default function Home() {
       }
     }
     fetchProperties();
-  }, [filterType, filterCity, filterNeighborhood, filterMinPrice, filterCategory, filterBedrooms]);
+  }, [filterType, filterCity, filterNeighborhood, filterMinPrice, filterMaxPrice, filterCategory, filterBedrooms]);
 
   const filteredProperties = properties.filter(p => 
     p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     p.city.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const cities = Array.from(new Set(properties.map(p => p.city)));
-  const neighborhoods = Array.from(new Set(properties.map(p => p.neighborhood)));
+  // Derive filter options statically from allProperties to ensure they don't shrink on search
+  const cities = Array.from(new Set(allProperties.map(p => p.city))).filter(Boolean);
+  const neighborhoods = Array.from(
+    new Set(
+      allProperties
+        .filter(p => searchCity === 'all' || p.city === searchCity)
+        .map(p => p.neighborhood)
+    )
+  ).filter(Boolean);
+
+  // Filter properties based on the active tab in the Hero
+  const getHeroPropertiesByTab = () => {
+    switch (activeHeroTab) {
+      case 'destaques':
+        return allProperties.filter(p => p.featured);
+      case 'caixa':
+        return allProperties.filter(p => 
+          p.title?.toLowerCase().includes('caixa') || 
+          p.description?.toLowerCase().includes('caixa') ||
+          p.title?.toLowerCase().includes('leilão') ||
+          p.description?.toLowerCase().includes('leilão')
+        );
+      case 'desconto':
+        return allProperties.filter(p => p.market_value && p.market_value > p.price);
+      case 'lancamentos':
+        return allProperties.filter(p => p.category === 'empreendimento');
+      case 'premium':
+        return allProperties.filter(p => p.price >= 1000000);
+      default:
+        return [];
+    }
+  };
+
+  const heroPropertiesList = getHeroPropertiesByTab();
+  const heroPropertiesSlice = heroPropertiesList.slice(0, 5); // Limit to top 5 carousel items
+  const activeHeroProperty = heroPropertiesSlice[heroCardIndex];
+
+  // Apply Hero search engine filters and scroll down
+  const handleHeroSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setFilterCity(searchCity);
+    setFilterNeighborhood(searchNeighborhood);
+    setFilterType(searchType);
+    if (searchPriceRange !== 'all') {
+      setFilterMaxPrice(Number(searchPriceRange));
+    } else {
+      setFilterMaxPrice('all');
+    }
+    
+    // Smooth scroll down to main listings section
+    const element = document.getElementById('imoveis');
+    if (element) {
+      const offset = 100;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   return (
     <div className="space-y-32 pb-32">
-      {/* Hero Section - Editorial Style */}
-      <section className="relative pt-40 pb-20 px-6 overflow-hidden">
+      {/* Restructured Hero Section - Ultra Premium & Conversion Focused */}
+      <section className="relative pt-40 pb-24 px-6 overflow-hidden">
         {/* Video Background */}
         <div className="absolute inset-0 z-0">
           <video 
@@ -181,44 +278,255 @@ export default function Home() {
           <div className="absolute inset-0 bg-navy-900/60 backdrop-blur-[6px]" />
         </div>
 
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
+          {/* Left Side: Copy, CTA & Search Engine */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="space-y-10"
+            className="lg:col-span-7 space-y-8"
           >
             <div className="space-y-4">
-              <span className="inline-block text-gold-500 font-bold uppercase tracking-[0.3em] text-xs">
-                Exclusividade em cada detalhe
+              <span className="inline-flex px-4 py-1.5 rounded-full bg-white/10 text-white text-[10px] font-black uppercase tracking-[0.25em] border border-white/10 backdrop-blur-sm">
+                Assessoria e Venda Direta Caixa
               </span>
-              <h1 className="text-6xl md:text-8xl font-black text-white tracking-tighter leading-[0.9]">
-                Imóveis <br /> <span className="text-navy-300">Exclusivos.</span>
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tighter leading-[1.0] lg:max-w-2xl">
+                Especialistas em <span className="text-navy-300">Imóveis Caixa</span> e Oportunidades.
               </h1>
             </div>
-            <p className="text-xl text-navy-100 max-w-lg font-medium leading-relaxed">
-              Oportunidades selecionadas com alto potencial de valorização e curadoria de luxo internacional.
+            
+            <p className="text-lg md:text-xl text-navy-100 font-medium leading-relaxed max-w-2xl">
+              Assessoria completa para compra de imóveis Caixa, leilões, venda direta e oportunidades imobiliárias com total segurança, transparência e descontos expressivos abaixo do valor de mercado.
             </p>
 
-            <div className="flex flex-col">
+            {/* CTAs */}
+            <div className="flex flex-wrap gap-4 pt-2">
+              <a 
+                href="https://wa.me/555499123455?text=Olá!%20Gostaria%20de%20conversar%20com%20um%20especialista%20sobre%20as%20oportunidades%20imobiliárias%20da%20Caixa." 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="btn-primary inline-flex items-center gap-3 bg-white text-navy-900 hover:bg-navy-50 hover:shadow-[0_20px_40px_rgba(255,255,255,0.15)] hover:scale-102 font-bold py-4 px-8 rounded-2xl transition-all text-base border border-white/20"
+              >
+                <MessageCircle size={20} className="text-navy-900" />
+                Fale com Especialista
+              </a>
+              <button 
+                onClick={() => {
+                  const element = document.getElementById('imoveis');
+                  if (element) {
+                    const offset = 100;
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - offset;
+                    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+                  }
+                }}
+                className="btn-secondary inline-flex items-center gap-3 bg-transparent text-white border-white/30 hover:bg-white/10 hover:border-white/50 font-bold py-4 px-8 rounded-2xl transition-all text-base"
+              >
+                Ver Oportunidades
+                <ArrowRight size={20} />
+              </button>
             </div>
 
+            {/* Glassmorphic Real Estate Search Bar */}
+            <div className="pt-4">
+              <form onSubmit={handleHeroSearch} className="glass rounded-[2rem] p-4 shadow-2xl flex flex-col md:flex-row gap-4 items-center">
+                {/* City Dropdown */}
+                <div className="w-full md:w-1/4 flex flex-col px-3 py-1 text-left">
+                  <label className="text-[9px] font-black text-navy-400 uppercase tracking-widest mb-1 flex items-center gap-1">
+                    <MapPin size={10} className="text-navy-400" /> Cidade
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={searchCity}
+                      onChange={(e) => {
+                        setSearchCity(e.target.value);
+                        setSearchNeighborhood('all');
+                      }}
+                      className="w-full bg-transparent text-navy-900 font-bold text-sm outline-none cursor-pointer appearance-none pr-6 focus:text-navy-950 font-sans"
+                    >
+                      <option value="all">Todas</option>
+                      {cities.map(city => (
+                        <option key={city} value={city} className="bg-white text-navy-900">{city}</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={14} className="absolute right-0 top-1/2 -translate-y-1/2 text-navy-400 pointer-events-none" />
+                  </div>
+                </div>
+
+                <div className="hidden md:block w-px h-8 bg-navy-200/30" />
+
+                {/* Neighborhood Dropdown */}
+                <div className="w-full md:w-1/4 flex flex-col px-3 py-1 text-left">
+                  <label className="text-[9px] font-black text-navy-400 uppercase tracking-widest mb-1 flex items-center gap-1">
+                    <Building2 size={10} className="text-navy-400" /> Bairro
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={searchNeighborhood}
+                      onChange={(e) => setSearchNeighborhood(e.target.value)}
+                      className="w-full bg-transparent text-navy-900 font-bold text-sm outline-none cursor-pointer appearance-none pr-6 focus:text-navy-950"
+                    >
+                      <option value="all">Todos</option>
+                      {neighborhoods.map(neighborhood => (
+                        <option key={neighborhood} value={neighborhood} className="bg-white text-navy-900">{neighborhood}</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={14} className="absolute right-0 top-1/2 -translate-y-1/2 text-navy-400 pointer-events-none" />
+                  </div>
+                </div>
+
+                <div className="hidden md:block w-px h-8 bg-navy-200/30" />
+
+                {/* Type Dropdown */}
+                <div className="w-full md:w-1/4 flex flex-col px-3 py-1 text-left">
+                  <label className="text-[9px] font-black text-navy-400 uppercase tracking-widest mb-1 flex items-center gap-1">
+                    <HomeIcon size={10} className="text-navy-400" /> Tipo
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={searchType}
+                      onChange={(e) => setSearchType(e.target.value)}
+                      className="w-full bg-transparent text-navy-900 font-bold text-sm outline-none cursor-pointer appearance-none pr-6 focus:text-navy-950"
+                    >
+                      <option value="all">Todos</option>
+                      <option value="house" className="bg-white text-navy-900">Casa</option>
+                      <option value="apartment" className="bg-white text-navy-900">Apartamento</option>
+                      <option value="land" className="bg-white text-navy-900">Terreno</option>
+                      <option value="commercial" className="bg-white text-navy-900">Comercial</option>
+                    </select>
+                    <ChevronDown size={14} className="absolute right-0 top-1/2 -translate-y-1/2 text-navy-400 pointer-events-none" />
+                  </div>
+                </div>
+
+                <div className="hidden md:block w-px h-8 bg-navy-200/30" />
+
+                {/* Price Dropdown */}
+                <div className="w-full md:w-1/4 flex flex-col px-3 py-1 text-left">
+                  <label className="text-[9px] font-black text-navy-400 uppercase tracking-widest mb-1 flex items-center gap-1">
+                    <SlidersHorizontal size={10} className="text-navy-400" /> Preço Máx.
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={searchPriceRange}
+                      onChange={(e) => setSearchPriceRange(e.target.value)}
+                      className="w-full bg-transparent text-navy-900 font-bold text-sm outline-none cursor-pointer appearance-none pr-6 focus:text-navy-950"
+                    >
+                      <option value="all">Qualquer</option>
+                      <option value="300000" className="bg-white text-navy-900">Até R$ 300 mil</option>
+                      <option value="600000" className="bg-white text-navy-900">Até R$ 600 mil</option>
+                      <option value="1000000" className="bg-white text-navy-900">Até R$ 1 milhão</option>
+                      <option value="2000000" className="bg-white text-navy-900">Até R$ 2 milhões</option>
+                    </select>
+                    <ChevronDown size={14} className="absolute right-0 top-1/2 -translate-y-1/2 text-navy-400 pointer-events-none" />
+                  </div>
+                </div>
+
+                {/* Search Submit Button */}
+                <button 
+                  type="submit"
+                  className="w-full md:w-auto bg-navy-900 hover:bg-navy-800 text-white font-bold p-4.5 rounded-2xl flex items-center justify-center gap-2 transition-all hover:scale-102 active:scale-95 shadow-lg shadow-navy-900/25 shrink-0 cursor-pointer"
+                >
+                  <Search size={20} />
+                  <span className="md:hidden text-sm">Buscar Oportunidades</span>
+                </button>
+              </form>
+            </div>
           </motion.div>
 
+          {/* Right Side: Property Categories & Interactive Card Slider */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1 }}
-            className="relative aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl group"
+            transition={{ duration: 1, delay: 0.2 }}
+            className="lg:col-span-5 w-full flex flex-col space-y-6 lg:pl-4"
           >
-            <img 
-              src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=2000" 
-              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-              alt="Luxury Estate"
-              loading="lazy"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-navy-900/60 via-transparent to-transparent" />
+            {/* Horizontal Categories Tabs - Responsive Touch Swipeable list */}
+            <div className="flex gap-2 overflow-x-auto pb-2 scroll-hide scroll-smooth">
+              {[
+                { id: 'destaques', label: 'Destaques', icon: Star },
+                { id: 'caixa', label: 'Imóveis Caixa', icon: Landmark },
+                { id: 'desconto', label: 'Alto Desconto', icon: Percent },
+                { id: 'lancamentos', label: 'Lançamentos', icon: Award },
+                { id: 'premium', label: 'Premium', icon: ShieldCheck }
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveHeroTab(tab.id as any)}
+                  className={cn(
+                    "px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap border shrink-0 cursor-pointer",
+                    activeHeroTab === tab.id
+                      ? "bg-white text-navy-900 border-white shadow-md shadow-white/5"
+                      : "bg-white/10 text-white border-white/10 hover:bg-white/20"
+                  )}
+                >
+                  <tab.icon size={13} className="shrink-0" />
+                  {tab.label}
+                </button>
+              ))}
+            </div>
 
+            {/* Main Interactive Property Card Slider container */}
+            <div className="relative min-h-[390px] w-full">
+              {allLoading ? (
+                <div className="w-full h-[390px] bg-white/5 border border-white/10 rounded-[2.5rem] animate-pulse flex flex-col items-center justify-center text-white/50 text-xs font-bold gap-3">
+                  <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  Carregando imóveis e leilões...
+                </div>
+              ) : heroPropertiesSlice.length > 0 && activeHeroProperty ? (
+                <div className="flex flex-col gap-5 w-full">
+                  <div className="relative h-[390px] w-full">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={`${activeHeroTab}-${activeHeroProperty.id}`}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                        className="absolute inset-0 w-full h-full"
+                      >
+                        <HeroPropertyCard property={activeHeroProperty} />
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Slider Pagination Controls */}
+                  {heroPropertiesSlice.length > 1 && (
+                    <div className="flex justify-between items-center px-6 py-3 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10">
+                      <span className="text-[10px] font-black text-white/60 uppercase tracking-widest">
+                        {heroCardIndex + 1} de {heroPropertiesSlice.length} oportunidades
+                      </span>
+                      <div className="flex gap-2">
+                        {heroPropertiesSlice.map((_, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => setHeroCardIndex(idx)}
+                            className={cn(
+                              "h-2 rounded-full transition-all cursor-pointer",
+                              idx === heroCardIndex ? "bg-white w-5" : "bg-white/30 hover:bg-white/50 w-2"
+                            )}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="w-full h-[390px] bg-white/5 border border-white/10 rounded-[2.5rem] backdrop-blur-md flex flex-col items-center justify-center p-8 text-center space-y-4">
+                  <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center text-white/40 shadow-inner">
+                    <Building2 size={28} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-white text-base">Novidades chegando</h4>
+                    <p className="text-white/60 text-xs mt-1 max-w-[250px] mx-auto leading-relaxed">
+                      Estamos filtrando as melhores oportunidades imobiliárias Caixa nesta categoria.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
           </motion.div>
         </div>
       </section>
