@@ -338,20 +338,21 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="flex items-end gap-6 pt-4">
-                    <div>
+                  <div className="flex flex-wrap items-center md:items-end gap-4 md:gap-6 pt-4">
+                    <div className="min-w-0 flex-1">
                       <p className="text-sm font-bold text-navy-300 uppercase tracking-widest mb-1">
                         Valor do Investimento
                       </p>
-                      <p className="text-4xl md:text-6xl font-black text-white tracking-tight">
+                      <p className="text-3xl sm:text-4xl md:text-6xl font-black text-white tracking-tight leading-[1.2] pb-1 truncate">
                         {formatPrice(activeHeroProperty.price)}
                       </p>
                     </div>
                     <Link 
                       to={`/property/${activeHeroProperty.id}`}
-                      className="w-16 h-16 rounded-2xl bg-gold-500 text-navy-900 flex items-center justify-center hover:scale-105 transition-transform shadow-lg shadow-gold-500/20 shrink-0"
+                      className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gold-500 text-navy-900 flex items-center justify-center hover:scale-105 transition-transform shadow-lg shadow-gold-500/20 shrink-0"
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      <ArrowRight size={28} />
+                      <ArrowRight size={24} className="md:w-7 md:h-7" />
                     </Link>
                   </div>
 
