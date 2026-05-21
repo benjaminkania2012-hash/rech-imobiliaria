@@ -243,36 +243,36 @@ export default function Home() {
           <div className="absolute inset-0 bg-navy-900/60 backdrop-blur-[6px]" />
         </div>
 
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
           {/* Left Side: Copy, CTA & Search Engine */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="lg:col-span-7 space-y-8"
+            className="lg:col-span-5 space-y-6"
           >
-            <div className="space-y-4">
+            <div className="space-y-3">
               <span className="inline-flex px-4 py-1.5 rounded-full bg-white/10 text-white text-[10px] font-black uppercase tracking-[0.25em] border border-white/10 backdrop-blur-sm">
                 Assessoria e Venda Direta Caixa
               </span>
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tighter leading-[1.0] lg:max-w-2xl">
+              <h1 className="text-3xl md:text-5xl lg:text-5xl font-black text-white tracking-tight leading-[1.1] lg:max-w-xl">
                 Especialistas em <span className="text-navy-300">Imóveis Caixa</span> e Oportunidades.
               </h1>
             </div>
             
-            <p className="text-lg md:text-xl text-navy-100 font-medium leading-relaxed max-w-2xl">
+            <p className="text-base md:text-lg text-navy-100/90 font-medium leading-relaxed max-w-xl">
               Assessoria completa para compra de imóveis Caixa, leilões, venda direta e oportunidades imobiliárias com total segurança, transparência e descontos expressivos abaixo do valor de mercado.
             </p>
 
             {/* CTAs */}
-            <div className="flex flex-wrap gap-4 pt-2">
+            <div className="flex flex-wrap gap-3.5 pt-1">
               <a 
                 href="https://wa.me/555499123455?text=Olá!%20Gostaria%20de%20conversar%20com%20um%20especialista%20sobre%20as%20oportunidades%20imobiliárias%20da%20Caixa." 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="btn-primary inline-flex items-center gap-3 bg-white text-navy-900 hover:bg-navy-50 hover:shadow-[0_20px_40px_rgba(255,255,255,0.15)] hover:scale-102 font-bold py-4 px-8 rounded-2xl transition-all text-base border border-white/20"
+                className="btn-primary inline-flex items-center gap-2.5 bg-white text-navy-900 hover:bg-navy-50 hover:shadow-[0_20px_40px_rgba(255,255,255,0.15)] hover:scale-102 font-bold py-3 px-6 rounded-xl transition-all text-sm md:text-base border border-white/20"
               >
-                <MessageCircle size={20} className="text-navy-900" />
+                <MessageCircle size={18} className="text-navy-900" />
                 Fale com Especialista
               </a>
               <button 
@@ -285,10 +285,10 @@ export default function Home() {
                     window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
                   }
                 }}
-                className="btn-secondary inline-flex items-center gap-3 bg-transparent text-white border-white/30 hover:bg-white/10 hover:border-white/50 font-bold py-4 px-8 rounded-2xl transition-all text-base"
+                className="btn-secondary inline-flex items-center gap-2.5 bg-transparent text-white border-white/30 hover:bg-white/10 hover:border-white/50 font-bold py-3 px-6 rounded-xl transition-all text-sm md:text-base"
               >
                 Ver Oportunidades
-                <ArrowRight size={20} />
+                <ArrowRight size={18} />
               </button>
             </div>
 
@@ -299,7 +299,7 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.2 }}
-            className="lg:col-span-5 w-full flex flex-col space-y-6 lg:pl-4"
+            className="lg:col-span-7 w-full flex flex-col space-y-6 lg:pl-8"
           >
             {/* Horizontal Categories Tabs - Responsive Touch Swipeable list */}
             <div className="flex gap-2 overflow-x-auto pb-2 scroll-hide scroll-smooth">
