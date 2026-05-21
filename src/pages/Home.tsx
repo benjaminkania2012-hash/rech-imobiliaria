@@ -239,11 +239,7 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="lg:col-span-5 space-y-6"
           >
-            <div className="space-y-3">
-              <h1 className="text-3xl md:text-5xl lg:text-5xl font-black text-white tracking-tight leading-[1.1] lg:max-w-xl">
-                Especialistas em <span className="text-navy-300">Imóveis Caixa</span> e Oportunidades.
-              </h1>
-            </div>
+
 
             {/* CTAs */}
             <div className="flex flex-wrap gap-3.5 pt-1">
