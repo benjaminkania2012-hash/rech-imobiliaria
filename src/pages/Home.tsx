@@ -6,10 +6,11 @@ import { demoService } from '../lib/demo';
 import PropertyCard from '../components/PropertyCard';
 import HeroPropertyCard from '../components/HeroPropertyCard';
 import { cn, formatPrice } from '../lib/utils';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { BLOG_POSTS } from '../lib/blog-data';
 
 export default function Home() {
+  const navigate = useNavigate();
   const [properties, setProperties] = useState<Property[]>([]);
   const [allProperties, setAllProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
@@ -212,7 +213,10 @@ export default function Home() {
       {/* Full-Width Carousel Hero Section */}
       <section className="relative pt-24 pb-8 px-6 overflow-hidden h-[calc(100vh-1rem)] min-h-[600px] flex items-center rounded-b-[4rem] mx-2 mt-2">
         {/* Dynamic Background Image */}
-        <div className="absolute inset-0 z-0 bg-navy-900">
+        <div 
+          className="absolute inset-0 z-0 bg-navy-900 cursor-pointer"
+          onClick={() => activeHeroProperty && navigate(`/property/${activeHeroProperty.id}`)}
+        >
           <AnimatePresence mode="popLayout">
             {activeHeroProperty && (
               <motion.img
@@ -227,8 +231,8 @@ export default function Home() {
             )}
           </AnimatePresence>
           {/* Deep dark overlay to ensure text readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-navy-900/95 via-navy-900/80 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-navy-900/90 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy-900/95 via-navy-900/80 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-navy-900/90 via-transparent to-transparent pointer-events-none" />
         </div>
 
         <div className="max-w-7xl mx-auto w-full relative z-10 flex flex-col justify-between h-full min-h-[500px]">
@@ -279,7 +283,11 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -30 }}
                   transition={{ duration: 0.6, ease: "easeOut" }}
-                  className="max-w-3xl space-y-8"
+                  className="max-w-3xl space-y-8 cursor-pointer group"
+                  onClick={(e) => {
+                    if ((e.target as HTMLElement).closest('button, a')) return;
+                    navigate(`/property/${activeHeroProperty.id}`);
+                  }}
                 >
                   <div className="flex items-center gap-3">
                     <span className="px-3 py-1 bg-gold-500 text-white text-[10px] font-black uppercase tracking-widest rounded-md">
