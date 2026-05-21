@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Building2, ArrowRight, ChevronDown, ShieldCheck, Award, Users, Star, CheckCircle2, History, Scale, FileCheck, Landmark, MessageCircle, Briefcase } from 'lucide-react';
+import { Search, Building2, ArrowRight, ChevronDown, ShieldCheck, Award, Users, Star, CheckCircle2, History, Scale, FileCheck, Landmark, MessageCircle, Briefcase, MapPin, Bed, Bath, Move } from 'lucide-react';
 import { supabase, type Property } from '../lib/supabase';
 import { demoService } from '../lib/demo';
 import PropertyCard from '../components/PropertyCard';
 import HeroPropertyCard from '../components/HeroPropertyCard';
-import { cn } from '../lib/utils';
+import { cn, formatPrice } from '../lib/utils';
 import { Link, useSearchParams } from 'react-router-dom';
 import { BLOG_POSTS } from '../lib/blog-data';
 
@@ -26,9 +26,7 @@ export default function Home() {
   const [isSearching, setIsSearching] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Hero interactive states
-  const [heroCardIndex, setHeroCardIndex] = useState(0);
-  
+
 
 
   // Sync state with URL params
@@ -196,19 +194,7 @@ export default function Home() {
   };
 
   const heroPropertiesList = getHeroProperties();
-  const heroPropertiesSlice = heroPropertiesList.slice(0, 3); // Limit to top 3 carousel items
-  const activeHeroProperty = heroPropertiesSlice[heroCardIndex];
-
-  // Autoplay carousel for Hero highlights
-  useEffect(() => {
-    if (heroPropertiesSlice.length <= 1) return;
-
-    const interval = setInterval(() => {
-      setHeroCardIndex((prevIndex) => (prevIndex + 1) % heroPropertiesSlice.length);
-    }, 5000); // Rotate every 5 seconds
-
-    return () => clearInterval(interval);
-  }, [heroPropertiesSlice.length, heroCardIndex]);
+  const heroPropertiesSlice = heroPropertiesList.slice(0, 3); // Limit to top 3 items
 
 
 
@@ -286,53 +272,75 @@ export default function Home() {
               </span>
             </div>
 
-            {/* Main Interactive Property Card Slider container */}
-            <div className="relative min-h-[390px] w-full">
+            {/* Main Mini Marketplace Container */}
+            <div className="w-full space-y-3">
               {allLoading ? (
                 <div className="w-full h-[390px] bg-white/5 border border-white/10 rounded-[2.5rem] animate-pulse flex flex-col items-center justify-center text-white/50 text-xs font-bold gap-3">
                   <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
-                  Carregando imóveis e leilões...
+                  Carregando oportunidades...
                 </div>
-              ) : heroPropertiesSlice.length > 0 && activeHeroProperty ? (
-                <div className="flex flex-col gap-5 w-full">
-                  <div className="relative h-[390px] w-full">
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={activeHeroProperty.id}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                        className="absolute inset-0 w-full h-full"
+              ) : heroPropertiesSlice.length > 0 ? (
+                <div className="grid grid-cols-1 gap-3">
+                  {heroPropertiesSlice.map((property, idx) => (
+                    <motion.div
+                      key={property.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.2 + (idx * 0.1) }}
+                    >
+                      <Link 
+                        to={`/property/${property.id}`}
+                        className="flex gap-4 p-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-3xl transition-all group backdrop-blur-md items-center"
                       >
-                        <HeroPropertyCard property={activeHeroProperty} />
-                      </motion.div>
-                    </AnimatePresence>
-                  </div>
-
-                  {/* Slider Pagination Controls */}
-                  {heroPropertiesSlice.length > 1 && (
-                    <div className="flex justify-between items-center px-6 py-3 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10">
-                      <span className="text-[10px] font-black text-white/60 uppercase tracking-widest">
-                        {heroCardIndex + 1} de {heroPropertiesSlice.length} oportunidades
-                      </span>
-                      <div className="flex gap-2">
-                        {heroPropertiesSlice.map((_, idx) => (
-                          <button
-                            key={idx}
-                            onClick={() => setHeroCardIndex(idx)}
-                            className={cn(
-                              "h-2 rounded-full transition-all cursor-pointer",
-                              idx === heroCardIndex ? "bg-white w-5" : "bg-white/30 hover:bg-white/50 w-2"
-                            )}
+                        <div className="w-28 h-28 rounded-2xl overflow-hidden shrink-0 relative">
+                          <img 
+                            src={property.images?.[0] || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=800'} 
+                            alt={property.title}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                           />
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                          <div className="absolute top-2 left-2 px-2 py-1 bg-navy-900/80 backdrop-blur-md rounded text-[8px] font-bold text-white uppercase tracking-wider border border-white/20">
+                            {property.type === 'auction' ? 'Leilão' : 'Venda'}
+                          </div>
+                        </div>
+                        <div className="flex flex-col justify-center flex-1 py-1">
+                          <h4 className="text-white font-bold text-sm line-clamp-1 group-hover:text-gold-500 transition-colors pr-2">
+                            {property.title}
+                          </h4>
+                          <p className="text-navy-200 text-xs mt-1 font-medium flex items-center gap-1 opacity-80">
+                            <MapPin size={12} className="text-navy-300" />
+                            {property.neighborhood}, {property.city}
+                          </p>
+                          
+                          <div className="flex items-center gap-3 mt-2 mb-1">
+                            <div className="flex items-center gap-1 text-navy-200">
+                              <Bed size={12} className="text-navy-400" />
+                              <span className="text-[11px] font-bold">{property.bedrooms}</span>
+                            </div>
+                            <div className="flex items-center gap-1 text-navy-200">
+                              <Bath size={12} className="text-navy-400" />
+                              <span className="text-[11px] font-bold">{property.bathrooms}</span>
+                            </div>
+                            <div className="flex items-center gap-1 text-navy-200">
+                              <Move size={12} className="text-navy-400" />
+                              <span className="text-[11px] font-bold">{property.area}m²</span>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center justify-between w-full mt-auto">
+                            <span className="text-base font-black text-white tracking-tight">
+                              {formatPrice(property.price)}
+                            </span>
+                            <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-white group-hover:bg-gold-500 group-hover:text-navy-900 transition-colors mr-2">
+                              <ArrowRight size={14} />
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    </motion.div>
+                  ))}
                 </div>
               ) : (
                 <div className="w-full h-[390px] bg-white/5 border border-white/10 rounded-[2.5rem] backdrop-blur-md flex flex-col items-center justify-center p-8 text-center space-y-4">
