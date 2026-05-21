@@ -120,7 +120,7 @@ function Navbar() {
             >
               <div className="grid grid-cols-5 gap-10">
                 <div className="space-y-6">
-                  <h4 className="text-[10px] font-black text-navy-300 uppercase tracking-[0.3em]">Lançamentos</h4>
+                  <button onClick={() => handleNavClick({ category: 'empreendimento' })} className="block text-left w-full text-[10px] font-black text-navy-300 hover:text-gold-500 uppercase tracking-[0.3em] transition-colors">Lançamentos</button>
                   <ul className="space-y-3">
                     {['Em construção', 'Lançamentos'].map(label => (
                       <li key={label}>
@@ -141,7 +141,7 @@ function Navbar() {
                 </div>
 
                 <div className="space-y-6">
-                  <h4 className="text-[10px] font-black text-navy-300 uppercase tracking-[0.3em]">Apartamentos</h4>
+                  <button onClick={() => handleNavClick({ type: 'apartment', category: activeMegaMenu === 'comprar' ? 'venda' : 'aluguel' })} className="block text-left w-full text-[10px] font-black text-navy-300 hover:text-gold-500 uppercase tracking-[0.3em] transition-colors">Apartamentos</button>
                   <ul className="space-y-3">
                     {[
                       { label: 'Kitinetes', type: 'apartment' },
@@ -165,7 +165,7 @@ function Navbar() {
                 </div>
 
                 <div className="space-y-6">
-                  <h4 className="text-[10px] font-black text-navy-300 uppercase tracking-[0.3em]">Casas</h4>
+                  <button onClick={() => handleNavClick({ type: 'house', category: activeMegaMenu === 'comprar' ? 'venda' : 'aluguel' })} className="block text-left w-full text-[10px] font-black text-navy-300 hover:text-gold-500 uppercase tracking-[0.3em] transition-colors">Casas</button>
                   <ul className="space-y-3">
                     {[
                       { label: '01 Dorm.', type: 'house', bedrooms: 1 },
@@ -185,7 +185,7 @@ function Navbar() {
                 </div>
 
                 <div className="space-y-6">
-                  <h4 className="text-[10px] font-black text-navy-300 uppercase tracking-[0.3em]">Comercial</h4>
+                  <button onClick={() => handleNavClick({ type: 'commercial', category: activeMegaMenu === 'comprar' ? 'venda' : 'aluguel' })} className="block text-left w-full text-[10px] font-black text-navy-300 hover:text-gold-500 uppercase tracking-[0.3em] transition-colors">Comercial</button>
                   <ul className="space-y-3">
                     {[
                       'Salas Superiores', 'Salas Térreas', 'Prédios / Casas', 
@@ -202,7 +202,7 @@ function Navbar() {
                 </div>
 
                 <div className="space-y-6">
-                  <h4 className="text-[10px] font-black text-navy-300 uppercase tracking-[0.3em]">Terrenos</h4>
+                  <button onClick={() => handleNavClick({ type: 'land', category: activeMegaMenu === 'comprar' ? 'venda' : 'aluguel' })} className="block text-left w-full text-[10px] font-black text-navy-300 hover:text-gold-500 uppercase tracking-[0.3em] transition-colors">Terrenos</button>
                   <ul className="space-y-3">
                     {[
                       'Áreas Rurais', 'Chácaras / Sítios', 'Terrenos Residenciais', 
