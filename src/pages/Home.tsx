@@ -25,6 +25,7 @@ export default function Home() {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [heroCardIndex, setHeroCardIndex] = useState(0);
 
 
 
@@ -194,45 +195,60 @@ export default function Home() {
   };
 
   const heroPropertiesList = getHeroProperties();
-  const heroPropertiesSlice = heroPropertiesList.slice(0, 3); // Limit to top 3 items
+  const activeHeroProperty = heroPropertiesList[heroCardIndex];
+
+  useEffect(() => {
+    if (heroPropertiesList.length <= 1) return;
+    const interval = setInterval(() => {
+      setHeroCardIndex((prev) => (prev + 1) % heroPropertiesList.length);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [heroPropertiesList.length]);
 
 
 
   return (
     <div className="space-y-32 pb-32">
-      {/* Restructured Hero Section - Ultra Premium & Conversion Focused */}
-      <section className="relative pt-40 pb-24 px-6 overflow-hidden">
-        {/* Video Background */}
-        <div className="absolute inset-0 z-0">
-          <video 
-            autoPlay 
-            muted 
-            loop 
-            playsInline 
-            className="w-full h-full object-cover scale-105"
-          >
-            <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260418_080021_d598092b-c4c2-4e53-8e46-94cf9064cd50.mp4" type="video/mp4" />
-          </video>
-          {/* Blue Filter Overlay with Blur */}
-          <div className="absolute inset-0 bg-navy-900/60 backdrop-blur-[6px]" />
+      {/* Full-Width Carousel Hero Section */}
+      <section className="relative pt-32 pb-24 px-6 overflow-hidden min-h-[85vh] flex items-center rounded-b-[4rem] mx-2 mt-2">
+        {/* Dynamic Background Image */}
+        <div className="absolute inset-0 z-0 bg-navy-900">
+          <AnimatePresence mode="popLayout">
+            {activeHeroProperty && (
+              <motion.img
+                key={activeHeroProperty.id + '-bg'}
+                initial={{ opacity: 0, scale: 1.05 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1.5, ease: "easeInOut" }}
+                src={activeHeroProperty.images?.[0] || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=1920'}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            )}
+          </AnimatePresence>
+          {/* Deep dark overlay to ensure text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-navy-900/95 via-navy-900/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-navy-900/90 via-transparent to-transparent" />
         </div>
 
-        <div className="max-w-7xl mx-auto flex flex-col gap-12 relative z-10 w-full">
-          {/* Top Bar with CTAs and Title */}
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 w-full"
-          >
+        <div className="max-w-7xl mx-auto w-full relative z-10 flex flex-col justify-between h-full min-h-[500px]">
+          {/* Top CTAs */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-10">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 text-white text-[10px] font-black uppercase tracking-[0.25em] border border-white/10 backdrop-blur-md">
+                <Star size={12} className="text-gold-500 fill-gold-500 shrink-0" />
+                Oportunidades em Destaque
+              </span>
+            </div>
+            
             <div className="flex flex-wrap gap-3.5">
               <a 
                 href="https://wa.me/555499123455?text=Olá!%20Gostaria%20de%20conversar%20com%20um%20especialista%20sobre%20as%20oportunidades%20imobiliárias%20da%20Caixa." 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="btn-primary inline-flex items-center gap-2.5 bg-white text-navy-900 hover:bg-navy-50 hover:shadow-[0_20px_40px_rgba(255,255,255,0.15)] hover:scale-102 font-bold py-3 px-6 rounded-xl transition-all text-sm md:text-base border border-white/20"
+                className="btn-primary inline-flex items-center gap-2 bg-white text-navy-900 hover:bg-navy-50 font-bold py-2.5 px-5 rounded-xl transition-all text-sm border border-white/20"
               >
-                <MessageCircle size={18} className="text-navy-900" />
+                <MessageCircle size={16} className="text-navy-900" />
                 Fale com Especialista
               </a>
               <button 
@@ -245,106 +261,125 @@ export default function Home() {
                     window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
                   }
                 }}
-                className="btn-secondary inline-flex items-center gap-2.5 bg-transparent text-white border-white/30 hover:bg-white/10 hover:border-white/50 font-bold py-3 px-6 rounded-xl transition-all text-sm md:text-base"
+                className="btn-secondary inline-flex items-center gap-2 bg-white/10 text-white border-white/20 hover:bg-white/20 font-bold py-2.5 px-5 rounded-xl transition-all text-sm backdrop-blur-md"
               >
-                Ver Oportunidades
-                <ArrowRight size={18} />
+                Ver Catálogo
+                <ArrowRight size={16} />
               </button>
             </div>
-            
-            {/* Elegant Header for Featured Properties */}
-            <div className="flex items-center">
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 text-white text-[10px] font-black uppercase tracking-[0.25em] border border-white/10 backdrop-blur-md">
-                <Star size={12} className="text-gold-500 fill-gold-500 shrink-0" />
-                Oportunidades em Destaque
-              </span>
-            </div>
-          </motion.div>
+          </div>
 
-          {/* 3-Column Mini Marketplace Container */}
-          <div className="w-full">
-            {allLoading ? (
-              <div className="w-full h-[390px] bg-white/5 border border-white/10 rounded-[2.5rem] animate-pulse flex flex-col items-center justify-center text-white/50 text-xs font-bold gap-3">
-                <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-                Carregando oportunidades...
-              </div>
-            ) : heroPropertiesSlice.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                {heroPropertiesSlice.map((property, idx) => (
-                  <motion.div
-                    key={property.id}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.2 + (idx * 0.1) }}
-                  >
+          {/* Main Carousel Content */}
+          <div className="flex-1 flex items-center py-12">
+            <AnimatePresence mode="wait">
+              {activeHeroProperty && (
+                <motion.div
+                  key={activeHeroProperty.id + '-content'}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -30 }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                  className="max-w-3xl space-y-8"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="px-3 py-1 bg-gold-500 text-white text-[10px] font-black uppercase tracking-widest rounded-md">
+                      {activeHeroProperty.type === 'auction' ? 'Leilão' : 'Venda Direta'}
+                    </span>
+                    <span className="flex items-center gap-1.5 text-navy-200 text-sm font-bold bg-navy-900/40 px-3 py-1 rounded-md backdrop-blur-sm border border-white/10">
+                      <MapPin size={14} className="text-navy-300" />
+                      {activeHeroProperty.neighborhood}, {activeHeroProperty.city}
+                    </span>
+                  </div>
+                  
+                  <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-[1.1]">
+                    {activeHeroProperty.title}
+                  </h1>
+
+                  <div className="flex flex-wrap items-center gap-6 text-white bg-navy-900/40 backdrop-blur-md p-6 rounded-2xl border border-white/10 w-fit">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                        <Bed size={18} className="text-navy-300" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] uppercase tracking-widest text-navy-300 font-bold">Quartos</p>
+                        <p className="text-xl font-black">{activeHeroProperty.bedrooms}</p>
+                      </div>
+                    </div>
+                    <div className="w-px h-10 bg-white/10" />
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                        <Bath size={18} className="text-navy-300" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] uppercase tracking-widest text-navy-300 font-bold">Banheiros</p>
+                        <p className="text-xl font-black">{activeHeroProperty.bathrooms}</p>
+                      </div>
+                    </div>
+                    <div className="w-px h-10 bg-white/10" />
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                        <Move size={18} className="text-navy-300" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] uppercase tracking-widest text-navy-300 font-bold">Área</p>
+                        <p className="text-xl font-black">{activeHeroProperty.area}m²</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-end gap-6 pt-4">
+                    <div>
+                      <p className="text-sm font-bold text-navy-300 uppercase tracking-widest mb-1">
+                        Valor do Investimento
+                      </p>
+                      <p className="text-4xl md:text-6xl font-black text-white tracking-tight">
+                        {formatPrice(activeHeroProperty.price)}
+                      </p>
+                    </div>
                     <Link 
-                      to={`/property/${property.id}`}
-                      className="flex flex-col bg-white/5 hover:bg-white/10 border border-white/10 rounded-[2rem] transition-all group backdrop-blur-md overflow-hidden h-full"
+                      to={`/property/${activeHeroProperty.id}`}
+                      className="w-16 h-16 rounded-2xl bg-gold-500 text-navy-900 flex items-center justify-center hover:scale-105 transition-transform shadow-lg shadow-gold-500/20 shrink-0"
                     >
-                      <div className="w-full aspect-[4/3] relative overflow-hidden">
-                        <img 
-                          src={property.images?.[0] || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=800'} 
-                          alt={property.title}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-                        />
-                        <div className="absolute top-4 left-4 px-3 py-1.5 bg-navy-900/80 backdrop-blur-md rounded-lg text-[9px] font-bold text-white uppercase tracking-wider border border-white/20">
-                          {property.type === 'auction' ? 'Leilão' : 'Venda Direta'}
-                        </div>
-                      </div>
-                      <div className="flex flex-col flex-1 p-6">
-                        <h4 className="text-white font-bold text-lg line-clamp-2 group-hover:text-gold-500 transition-colors leading-snug">
-                          {property.title}
-                        </h4>
-                        <p className="text-navy-200 text-xs mt-2 font-medium flex items-center gap-1.5 opacity-80">
-                          <MapPin size={14} className="text-navy-300" />
-                          {property.neighborhood}, {property.city}
-                        </p>
-                        
-                        <div className="flex items-center gap-4 mt-5 mb-2 pt-5 border-t border-white/10">
-                          <div className="flex items-center gap-1.5 text-navy-200">
-                            <Bed size={16} className="text-navy-400" />
-                            <span className="text-xs font-bold">{property.bedrooms}</span>
-                          </div>
-                          <div className="flex items-center gap-1.5 text-navy-200">
-                            <Bath size={16} className="text-navy-400" />
-                            <span className="text-xs font-bold">{property.bathrooms}</span>
-                          </div>
-                          <div className="flex items-center gap-1.5 text-navy-200">
-                            <Move size={16} className="text-navy-400" />
-                            <span className="text-xs font-bold">{property.area}m²</span>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center justify-between w-full mt-auto pt-4">
-                          <span className="text-xl font-black text-white tracking-tight">
-                            {formatPrice(property.price)}
-                          </span>
-                          <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white group-hover:bg-gold-500 group-hover:text-navy-900 transition-colors">
-                            <ArrowRight size={16} />
-                          </div>
-                        </div>
-                      </div>
+                      <ArrowRight size={28} />
                     </Link>
-                  </motion.div>
+                  </div>
+
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Carousel Controls */}
+          {heroPropertiesList.length > 1 && (
+            <div className="flex items-center gap-4 pb-6">
+              <div className="flex gap-2">
+                {heroPropertiesList.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setHeroCardIndex(idx)}
+                    className={cn(
+                      "h-1.5 rounded-full transition-all cursor-pointer",
+                      idx === heroCardIndex ? "bg-gold-500 w-8" : "bg-white/30 hover:bg-white/50 w-3"
+                    )}
+                  />
                 ))}
               </div>
-            ) : (
-              <div className="w-full h-[390px] bg-white/5 border border-white/10 rounded-[2.5rem] backdrop-blur-md flex flex-col items-center justify-center p-8 text-center space-y-4">
-                <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center text-white/40 shadow-inner">
-                  <Building2 size={28} />
-                </div>
-                <div>
-                  <h4 className="font-bold text-white text-base">Novidades chegando</h4>
-                  <p className="text-white/60 text-xs mt-1 max-w-[250px] mx-auto leading-relaxed">
-                    Estamos filtrando as melhores oportunidades imobiliárias Caixa nesta categoria.
-                  </p>
-                </div>
+              <div className="flex items-center gap-2 ml-auto">
+                 <button 
+                   onClick={() => setHeroCardIndex((prev) => (prev - 1 + heroPropertiesList.length) % heroPropertiesList.length)}
+                   className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center text-white transition-all border border-white/10"
+                 >
+                   <ArrowRight size={18} className="rotate-180" />
+                 </button>
+                 <button 
+                   onClick={() => setHeroCardIndex((prev) => (prev + 1) % heroPropertiesList.length)}
+                   className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center text-white transition-all border border-white/10"
+                 >
+                   <ArrowRight size={18} />
+                 </button>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </section>
 
