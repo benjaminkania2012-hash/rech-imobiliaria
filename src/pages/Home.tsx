@@ -199,6 +199,17 @@ export default function Home() {
   const heroPropertiesSlice = heroPropertiesList.slice(0, 5); // Limit to top 5 carousel items
   const activeHeroProperty = heroPropertiesSlice[heroCardIndex];
 
+  // Autoplay carousel for Hero highlights
+  useEffect(() => {
+    if (heroPropertiesSlice.length <= 1) return;
+
+    const interval = setInterval(() => {
+      setHeroCardIndex((prevIndex) => (prevIndex + 1) % heroPropertiesSlice.length);
+    }, 5000); // Rotate every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [heroPropertiesSlice.length, heroCardIndex]);
+
 
 
   return (
