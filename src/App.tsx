@@ -413,7 +413,7 @@ export default function App() {
       </main>
       
       {!isAdmin && (
-        <footer className="bg-white pt-24 pb-12 px-6 border-t border-navy-50">
+        <footer className="bg-navy-50/50 pt-24 pb-12 px-6 border-t border-navy-100/50">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-20">
               <div className="col-span-1 md:col-span-1 space-y-6">
@@ -431,7 +431,7 @@ export default function App() {
                 </p>
               </div>
               
-              <div className="space-y-6">
+              <div className="space-y-6 lg:pt-3">
                 <h4 className="text-navy-900 font-bold tracking-tight">Links Úteis</h4>
                 <ul className="space-y-4 text-sm font-medium text-navy-400">
                   <li><Link to="/" className="hover:text-navy-900 transition-colors">Início</Link></li>
@@ -440,7 +440,7 @@ export default function App() {
                 </ul>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-6 lg:pt-3">
                 <h4 className="text-navy-900 font-bold tracking-tight">Contato</h4>
                 <ul className="space-y-4 text-sm font-medium text-navy-400">
                   <li className="flex items-start gap-2">
@@ -456,7 +456,7 @@ export default function App() {
                 </ul>
               </div>
               
-              <div className="space-y-6">
+              <div className="space-y-6 lg:pt-3">
                 <h4 className="text-navy-900 font-bold tracking-tight text-right md:text-left">Siga-nos</h4>
                 <div className="flex justify-end md:justify-start gap-3">
                    <a href="#" className="w-10 h-10 rounded-full bg-navy-50 flex items-center justify-center hover:bg-navy-900 hover:text-white transition-all">
