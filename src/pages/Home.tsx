@@ -212,7 +212,7 @@ export default function Home() {
     <div className="space-y-32 pb-32">
       {/* Full-Width Carousel Hero Section */}
       <section 
-        className="relative pt-24 pb-8 px-6 overflow-hidden h-[calc(100vh-1rem)] min-h-[600px] flex items-center rounded-b-[4rem] mx-2 mt-2 cursor-pointer group"
+        className="relative pt-32 pb-16 px-6 overflow-hidden min-h-[calc(100vh-1rem)] flex items-center rounded-b-[4rem] mx-2 mt-2 cursor-pointer group"
         onClick={(e) => {
           if ((e.target as HTMLElement).closest('button, a')) return;
           if (activeHeroProperty) navigate(`/property/${activeHeroProperty.id}`);
