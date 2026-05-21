@@ -309,23 +309,26 @@ export default function Home() {
                 { id: 'desconto', label: 'Alto Desconto', icon: Percent },
                 { id: 'lancamentos', label: 'Lançamentos', icon: Award },
                 { id: 'premium', label: 'Premium', icon: ShieldCheck }
-              ].map(tab => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveHeroTab(tab.id as any)}
-                  className={cn(
-                    "px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap border shrink-0 cursor-pointer",
-                    activeHeroTab === tab.id
-                      ? "bg-white text-navy-900 border-white shadow-md shadow-white/5"
-                      : "bg-white/10 text-white border-white/10 hover:bg-white/20"
-                  )}
-                >
-                  {tab.id === 'destaques' && (
-                    <tab.icon size={16} className="shrink-0" />
-                  )}
-                  {tab.label}
-                </button>
-              ))}
+              ].map(tab => {
+                const IconComponent = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveHeroTab(tab.id as any)}
+                    className={cn(
+                      "px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap border shrink-0 cursor-pointer",
+                      activeHeroTab === tab.id
+                        ? "bg-white text-navy-900 border-white shadow-md shadow-white/5"
+                        : "bg-white/10 text-white border-white/10 hover:bg-white/20"
+                    )}
+                  >
+                    {tab.id === 'destaques' && IconComponent && (
+                      <IconComponent size={16} className="shrink-0" />
+                    )}
+                    {tab.label}
+                  </button>
+                );
+              })}
             </div>
 
             {/* Main Interactive Property Card Slider container */}
