@@ -445,7 +445,17 @@ export default function App() {
                 <ul className="space-y-4 text-sm font-medium text-navy-400">
                   <li className="flex items-start gap-2">
                     <MapPin size={20} className="text-navy-900 shrink-0 mt-0.5" />
-                    <span className="leading-snug">GALERIA ATMOSFERA - Av. Sete de Setembro, 345 - SALA 15 - Centro, Erechim - RS, 99700-032</span>
+                    <div className="flex flex-col items-start gap-1">
+                      <span className="leading-snug">GALERIA ATMOSFERA - Av. Sete de Setembro, 345 - SALA 15 - Centro, Erechim - RS, 99700-032</span>
+                      <a 
+                        href="https://www.google.com/maps/dir/?api=1&destination=GALERIA+ATMOSFERA,+Av.+Sete+de+Setembro,+345+-+Centro,+Erechim+-+RS" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="inline-flex items-center gap-1 mt-1 text-xs font-bold text-navy-900 hover:text-gold-500 uppercase tracking-widest transition-colors"
+                      >
+                        Como chegar <ArrowRight size={12} />
+                      </a>
+                    </div>
                   </li>
                   <li>
                     <a href="https://wa.me/555499123455" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-navy-900 transition-colors">
