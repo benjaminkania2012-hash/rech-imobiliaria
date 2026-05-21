@@ -196,7 +196,7 @@ export default function Home() {
   };
 
   const heroPropertiesList = getHeroProperties();
-  const heroPropertiesSlice = heroPropertiesList.slice(0, 5); // Limit to top 5 carousel items
+  const heroPropertiesSlice = heroPropertiesList.slice(0, 3); // Limit to top 3 carousel items
   const activeHeroProperty = heroPropertiesSlice[heroCardIndex];
 
   // Autoplay carousel for Hero highlights
@@ -240,9 +240,6 @@ export default function Home() {
             className="lg:col-span-5 space-y-6"
           >
             <div className="space-y-3">
-              <span className="inline-flex px-4 py-1.5 rounded-full bg-white/10 text-white text-[10px] font-black uppercase tracking-[0.25em] border border-white/10 backdrop-blur-sm">
-                Assessoria e Venda Direta Caixa
-              </span>
               <h1 className="text-3xl md:text-5xl lg:text-5xl font-black text-white tracking-tight leading-[1.1] lg:max-w-xl">
                 Especialistas em <span className="text-navy-300">Imóveis Caixa</span> e Oportunidades.
               </h1>
