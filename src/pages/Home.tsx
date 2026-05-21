@@ -210,6 +210,7 @@ export default function Home() {
 
   return (
     <div className="space-y-32 pb-32">
+      <h1 className="sr-only">RECH Negócios Imobiliários - Especialistas em Imóveis Caixa em Erechim e Região</h1>
       {/* Full-Width Carousel Hero Section */}
       <section 
         className="relative pt-32 pb-16 px-6 overflow-hidden min-h-[calc(100vh-1rem)] flex items-center rounded-b-[4rem] mx-2 mt-2 cursor-pointer group"
@@ -229,6 +230,7 @@ export default function Home() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 1.5, ease: "easeInOut" }}
                 src={activeHeroProperty.images?.[0] || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=1920'}
+                alt={activeHeroProperty.title}
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3s]"
               />
             )}
@@ -302,9 +304,9 @@ export default function Home() {
                     </span>
                   </div>
                   
-                  <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-[1.1]">
+                  <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-[1.1]">
                     {activeHeroProperty.title}
-                  </h1>
+                  </h2>
 
                   <div className="flex flex-wrap items-center gap-6 text-white bg-navy-900/40 backdrop-blur-md p-6 rounded-2xl border border-white/10 w-fit">
                     <div className="flex items-center gap-3">
