@@ -437,7 +437,7 @@ export default function Home() {
       
       {/* Institutional Section - Juliano Rech */}
       <section className="max-w-7xl mx-auto px-6 space-y-32">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-start">
           <div className="relative group">
              <motion.div 
                initial={{ opacity: 0, scale: 0.95 }}
