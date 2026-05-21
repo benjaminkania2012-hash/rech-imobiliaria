@@ -5,6 +5,7 @@ import { MapPin, Bed, Bath, Move, Car, ChevronLeft, Share2, Heart, MessageCircle
 import { supabase, type Property } from '../lib/supabase';
 import { demoService } from '../lib/demo';
 import { formatPrice, cn } from '../lib/utils';
+import { Helmet } from 'react-helmet-async';
 
 export default function PropertyDetails() {
   const { id } = useParams();
@@ -60,6 +61,17 @@ export default function PropertyDetails() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 space-y-12">
+      <Helmet>
+        <title>{property.title} | RECH Negócios Imobiliários</title>
+        <meta name="description" content={property.description} />
+        <meta property="og:title" content={property.title} />
+        <meta property="og:description" content={property.description} />
+        <meta property="og:image" content={images[0]} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={property.title} />
+        <meta name="twitter:image" content={images[0]} />
+      </Helmet>
+
       {/* Header Actions */}
       <div className="flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 text-navy-400 hover:text-navy-900 font-bold transition-colors uppercase tracking-tight group">
@@ -199,7 +211,7 @@ export default function PropertyDetails() {
                  Ligar para Corretor
                </a>
                <a 
-                 href={`https://wa.me/555499123455?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20o%20imóvel%20${encodeURIComponent(property.title)}`}
+                 href={`https://wa.me/555499123455?text=Olá!%20Estava%20navegando%20no%20site%20e%20tenho%20interesse%20no%20imóvel:%20${encodeURIComponent(property.title)}`}
                  target="_blank"
                  rel="noopener noreferrer"
                  className="w-full btn-secondary flex items-center justify-center gap-3 py-4 text-lg border-green-200 text-green-700 hover:bg-green-50"
@@ -225,7 +237,7 @@ export default function PropertyDetails() {
           </div>
           
           <a 
-            href={`https://wa.me/555499123455?text=Olá!%20Gostaria%20de%20agendar%20uma%20visita%20para%20o%20imóvel%20${encodeURIComponent(property.title)}`}
+            href={`https://wa.me/555499123455?text=Olá!%20Gostaria%20de%20agendar%20uma%20visita%20para%20o%20imóvel:%20${encodeURIComponent(property.title)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="apple-card p-6 bg-slate-50/50 border-dashed border-2 border-slate-200 flex items-center gap-4 group cursor-pointer hover:border-blue-300 transition-colors block"
