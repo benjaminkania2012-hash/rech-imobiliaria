@@ -425,6 +425,9 @@ export default function App() {
                 </div>
                 <p className="text-navy-400 text-sm leading-relaxed font-medium">
                   Negócios imobiliários com excelência e transparência. Encontre o imóvel dos seus sonhos com a RECH.
+                  <br /><br />
+                  <strong className="text-navy-900 block">RECH NEGÓCIOS IMOBILIÁRIOS LTDA</strong>
+                  CRECI 27076J
                 </p>
               </div>
               
@@ -441,8 +444,8 @@ export default function App() {
                 <h4 className="text-navy-900 font-bold tracking-tight">Contato</h4>
                 <ul className="space-y-4 text-sm font-medium text-navy-400">
                   <li className="flex items-start gap-2">
-                    <MapPin size={18} className="text-navy-900 shrink-0" />
-                    <span>Av. Beira Mar, 1000 - Centro, Florianópolis - SC</span>
+                    <MapPin size={20} className="text-navy-900 shrink-0 mt-0.5" />
+                    <span className="leading-snug">GALERIA ATMOSFERA - Av. Sete de Setembro, 345 - SALA 15 - Centro, Erechim - RS, 99700-032</span>
                   </li>
                   <li>
                     <a href="https://wa.me/555499123455" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-navy-900 transition-colors">
@@ -470,7 +473,7 @@ export default function App() {
             </div>
             
             <div className="pt-8 border-t border-navy-50 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-black text-navy-300 uppercase tracking-[0.2em]">
-              <p>© 2024 RECH NEGÓCIOS IMOBILIÁRIOS. TODOS OS DIREITOS RESERVADOS.</p>
+              <p>© 2024 RECH NEGÓCIOS IMOBILIÁRIOS LTDA • CRECI 27076J. TODOS OS DIREITOS RESERVADOS.</p>
               <div className="flex items-center gap-8">
                  <button onClick={() => setLegalModal('terms')} className="hover:text-navy-900 transition-colors">Termos de Uso</button>
                  <button onClick={() => setLegalModal('privacy')} className="hover:text-navy-900 transition-colors">Política de Privacidade</button>
