@@ -244,10 +244,6 @@ export default function Home() {
                 Especialistas em <span className="text-navy-300">Imóveis Caixa</span> e Oportunidades.
               </h1>
             </div>
-            
-            <p className="text-base md:text-lg text-navy-100/90 font-medium leading-relaxed max-w-xl">
-              Assessoria completa para compra de imóveis Caixa, leilões, venda direta e oportunidades imobiliárias com total segurança, transparência e descontos expressivos abaixo do valor de mercado.
-            </p>
 
             {/* CTAs */}
             <div className="flex flex-wrap gap-3.5 pt-1">
