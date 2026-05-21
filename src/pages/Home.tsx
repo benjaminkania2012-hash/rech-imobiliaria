@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, MapPin, Building2, Home as HomeIcon, SlidersHorizontal, ArrowRight, ChevronDown, ShieldCheck, Award, Users, Star, CheckCircle2, History, Scale, FileCheck, Landmark, MessageCircle, Briefcase, Percent, TrendingDown } from 'lucide-react';
+import { Search, Building2, ArrowRight, ChevronDown, ShieldCheck, Award, Users, Star, CheckCircle2, History, Scale, FileCheck, Landmark, MessageCircle, Briefcase, Percent, TrendingDown } from 'lucide-react';
 import { supabase, type Property } from '../lib/supabase';
 import { demoService } from '../lib/demo';
 import PropertyCard from '../components/PropertyCard';
@@ -30,11 +30,7 @@ export default function Home() {
   const [activeHeroTab, setActiveHeroTab] = useState<'destaques' | 'caixa' | 'desconto' | 'lancamentos' | 'premium'>('destaques');
   const [heroCardIndex, setHeroCardIndex] = useState(0);
   
-  // Hero search bar states
-  const [searchCity, setSearchCity] = useState('all');
-  const [searchNeighborhood, setSearchNeighborhood] = useState('all');
-  const [searchType, setSearchType] = useState('all');
-  const [searchPriceRange, setSearchPriceRange] = useState('all');
+
 
   // Sync state with URL params
   useEffect(() => {
@@ -197,15 +193,7 @@ export default function Home() {
     p.city.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Derive filter options statically from allProperties to ensure they don't shrink on search
-  const cities = Array.from(new Set(allProperties.map(p => p.city))).filter(Boolean);
-  const neighborhoods = Array.from(
-    new Set(
-      allProperties
-        .filter(p => searchCity === 'all' || p.city === searchCity)
-        .map(p => p.neighborhood)
-    )
-  ).filter(Boolean);
+
 
   // Filter properties based on the active tab in the Hero
   const getHeroPropertiesByTab = () => {
@@ -234,30 +222,7 @@ export default function Home() {
   const heroPropertiesSlice = heroPropertiesList.slice(0, 5); // Limit to top 5 carousel items
   const activeHeroProperty = heroPropertiesSlice[heroCardIndex];
 
-  // Apply Hero search engine filters and scroll down
-  const handleHeroSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFilterCity(searchCity);
-    setFilterNeighborhood(searchNeighborhood);
-    setFilterType(searchType);
-    if (searchPriceRange !== 'all') {
-      setFilterMaxPrice(Number(searchPriceRange));
-    } else {
-      setFilterMaxPrice('all');
-    }
-    
-    // Smooth scroll down to main listings section
-    const element = document.getElementById('imoveis');
-    if (element) {
-      const offset = 100;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - offset;
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    }
-  };
+
 
   return (
     <div className="space-y-32 pb-32">
@@ -327,110 +292,6 @@ export default function Home() {
               </button>
             </div>
 
-            {/* Glassmorphic Real Estate Search Bar */}
-            <div className="pt-4">
-              <form onSubmit={handleHeroSearch} className="glass rounded-[2rem] p-4 shadow-2xl flex flex-col md:flex-row gap-4 items-center">
-                {/* City Dropdown */}
-                <div className="w-full md:w-1/4 flex flex-col px-3 py-1 text-left">
-                  <label className="text-[9px] font-black text-navy-400 uppercase tracking-widest mb-1 flex items-center gap-1">
-                    <MapPin size={10} className="text-navy-400" /> Cidade
-                  </label>
-                  <div className="relative">
-                    <select
-                      value={searchCity}
-                      onChange={(e) => {
-                        setSearchCity(e.target.value);
-                        setSearchNeighborhood('all');
-                      }}
-                      className="w-full bg-transparent text-navy-900 font-bold text-sm outline-none cursor-pointer appearance-none pr-6 focus:text-navy-950 font-sans"
-                    >
-                      <option value="all">Todas</option>
-                      {cities.map(city => (
-                        <option key={city} value={city} className="bg-white text-navy-900">{city}</option>
-                      ))}
-                    </select>
-                    <ChevronDown size={14} className="absolute right-0 top-1/2 -translate-y-1/2 text-navy-400 pointer-events-none" />
-                  </div>
-                </div>
-
-                <div className="hidden md:block w-px h-8 bg-navy-200/30" />
-
-                {/* Neighborhood Dropdown */}
-                <div className="w-full md:w-1/4 flex flex-col px-3 py-1 text-left">
-                  <label className="text-[9px] font-black text-navy-400 uppercase tracking-widest mb-1 flex items-center gap-1">
-                    <Building2 size={10} className="text-navy-400" /> Bairro
-                  </label>
-                  <div className="relative">
-                    <select
-                      value={searchNeighborhood}
-                      onChange={(e) => setSearchNeighborhood(e.target.value)}
-                      className="w-full bg-transparent text-navy-900 font-bold text-sm outline-none cursor-pointer appearance-none pr-6 focus:text-navy-950"
-                    >
-                      <option value="all">Todos</option>
-                      {neighborhoods.map(neighborhood => (
-                        <option key={neighborhood} value={neighborhood} className="bg-white text-navy-900">{neighborhood}</option>
-                      ))}
-                    </select>
-                    <ChevronDown size={14} className="absolute right-0 top-1/2 -translate-y-1/2 text-navy-400 pointer-events-none" />
-                  </div>
-                </div>
-
-                <div className="hidden md:block w-px h-8 bg-navy-200/30" />
-
-                {/* Type Dropdown */}
-                <div className="w-full md:w-1/4 flex flex-col px-3 py-1 text-left">
-                  <label className="text-[9px] font-black text-navy-400 uppercase tracking-widest mb-1 flex items-center gap-1">
-                    <HomeIcon size={10} className="text-navy-400" /> Tipo
-                  </label>
-                  <div className="relative">
-                    <select
-                      value={searchType}
-                      onChange={(e) => setSearchType(e.target.value)}
-                      className="w-full bg-transparent text-navy-900 font-bold text-sm outline-none cursor-pointer appearance-none pr-6 focus:text-navy-950"
-                    >
-                      <option value="all">Todos</option>
-                      <option value="house" className="bg-white text-navy-900">Casa</option>
-                      <option value="apartment" className="bg-white text-navy-900">Apartamento</option>
-                      <option value="land" className="bg-white text-navy-900">Terreno</option>
-                      <option value="commercial" className="bg-white text-navy-900">Comercial</option>
-                    </select>
-                    <ChevronDown size={14} className="absolute right-0 top-1/2 -translate-y-1/2 text-navy-400 pointer-events-none" />
-                  </div>
-                </div>
-
-                <div className="hidden md:block w-px h-8 bg-navy-200/30" />
-
-                {/* Price Dropdown */}
-                <div className="w-full md:w-1/4 flex flex-col px-3 py-1 text-left">
-                  <label className="text-[9px] font-black text-navy-400 uppercase tracking-widest mb-1 flex items-center gap-1">
-                    <SlidersHorizontal size={10} className="text-navy-400" /> Preço Máx.
-                  </label>
-                  <div className="relative">
-                    <select
-                      value={searchPriceRange}
-                      onChange={(e) => setSearchPriceRange(e.target.value)}
-                      className="w-full bg-transparent text-navy-900 font-bold text-sm outline-none cursor-pointer appearance-none pr-6 focus:text-navy-950"
-                    >
-                      <option value="all">Qualquer</option>
-                      <option value="300000" className="bg-white text-navy-900">Até R$ 300 mil</option>
-                      <option value="600000" className="bg-white text-navy-900">Até R$ 600 mil</option>
-                      <option value="1000000" className="bg-white text-navy-900">Até R$ 1 milhão</option>
-                      <option value="2000000" className="bg-white text-navy-900">Até R$ 2 milhões</option>
-                    </select>
-                    <ChevronDown size={14} className="absolute right-0 top-1/2 -translate-y-1/2 text-navy-400 pointer-events-none" />
-                  </div>
-                </div>
-
-                {/* Search Submit Button */}
-                <button 
-                  type="submit"
-                  className="w-full md:w-auto bg-navy-900 hover:bg-navy-800 text-white font-bold p-4.5 rounded-2xl flex items-center justify-center gap-2 transition-all hover:scale-102 active:scale-95 shadow-lg shadow-navy-900/25 shrink-0 cursor-pointer"
-                >
-                  <Search size={20} />
-                  <span className="md:hidden text-sm">Buscar Oportunidades</span>
-                </button>
-              </form>
-            </div>
           </motion.div>
 
           {/* Right Side: Property Categories & Interactive Card Slider */}
