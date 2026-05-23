@@ -1,0 +1,49 @@
+commit 31f0e806a75fa2415b6ab6388e6a572c04a9bdd0
+Author: benjaminkania2012-hash <benjamin.kania2012@gmail.com>
+Date:   Thu May 21 19:21:56 2026 -0300
+
+    feat: add Home page with property search, filters, and SEO schema markup
+
+ src/pages/Home.tsx | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+commit 7f04b19a9b4f30bf78c9e845e423cf8e50851e39
+Author: benjaminkania2012-hash <benjamin.kania2012@gmail.com>
+Date:   Thu May 21 18:39:57 2026 -0300
+
+    feat: implement property details page and add sitemap generation support
+
+ generate-sitemap.js           | 78 +++++++++++++++++++++++++++++++++++++++++++
+ index.html                    | 30 +++++++++++++++++
+ package.json                  |  3 +-
+ src/main.tsx                  |  9 +++--
+ src/pages/PropertyDetails.tsx | 16 +++++++--
+ 5 files changed, 130 insertions(+), 6 deletions(-)
+
+commit ed41d17807e728a32ff780f734a9f5340944bd0a
+Author: benjaminkania2012-hash <benjamin.kania2012@gmail.com>
+Date:   Thu May 21 18:26:05 2026 -0300
+
+    feat: implement Home page with property search, filters, and dynamic hero carousel with SEO schema markup
+
+ index.html         | 5 ++++-
+ src/pages/Home.tsx | 6 ++++--
+ 2 files changed, 8 insertions(+), 3 deletions(-)
+
+commit 44236a3a8c1ed2644556dbc67dbf55fbf93924fc
+Author: benjaminkania2012-hash <benjamin.kania2012@gmail.com>
+Date:   Thu May 21 18:16:38 2026 -0300
+
+    feat: implement home page with property search, filters, hero carousel, and SEO schema markup
+
+ src/pages/Home.tsx | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 2eb4c75591f2305f6cf41294908ea24ef6089115
+Author: benjaminkania2012-hash <benjamin.kania2012@gmail.com>
+Date:   Thu May 21 18:11:46 2026 -0300
+
+    feat: implement Home page with property search, filter logic, and SEO schema markup
+
+ src/pages/Home.tsx | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
